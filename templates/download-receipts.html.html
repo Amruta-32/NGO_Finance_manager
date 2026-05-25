@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Receipts</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: #007bff;
+      color: #fff;
+    }
+    tr:hover {
+      background: #f9f9f9;
+    }
+    .btn {
+      padding: 6px 12px;
+      background: #198754;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .btn:hover {
+      background: #157347;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Your Donation Receipts</h2>
+    {% if receipts %}
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>NGO</th>
+          <th>Type</th>
+          <th>Payment</th>
+          <th>Amount (₹)</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in receipts %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ r.ngo_name }}</td>
+          <td>{{ r.donation_type }}</td>
+          <td>{{ r.payment_method }}</td>
+          <td>{{ r.amount }}</td>
+          <td>{{ r.status }}</td>
+          <td>{{ r.donation_date if r.donation_date else '—' }}</td>
+          <td>
+<a href="{{ url_for('download_receipt', donation_id=r.id) }}" class="btn">Download PDF</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p style="text-align:center;color:#777;">No donations yet.</p>
+    {% endif %}
+  </div>
+        <div style="text-align:center;">
+            <a href="{{ url_for('donor_dashboard') }}" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

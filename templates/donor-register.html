@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Registration - FundDonate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <a href="{{ url_for('index') }}" class="logo">
+            <i class="fas fa-hand-holding-heart"></i>
+            <h1>FundDonate</h1>
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="card donor">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h2 class="card-title">Donor Registration</h2>
+                <p class="card-subtitle">Join us in making a difference</p>
+            </div>
+
+            <div class="card-body">
+                <form action="{{ url_for('donor_register') }}" method="POST">
+                    <h3 class="section-title">Personal Information</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fullname">Full Name *</label>
+                            <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="designation">Designation/Profession *</label>
+                            <input type="text" id="designation" name="designation" placeholder="Your profession or designation" required>
+                        </div>
+                    </div>
+
+                 <div class="form-group">
+    <label for="address">Address *</label>
+    <input type="text" id="address" name="address" placeholder="House/Street" required>
+</div>
+
+<div class="form-group">
+    <label for="city">City *</label>
+    <input type="text" id="city" name="city" required>
+</div>
+
+<div class="form-group">
+    <label for="taluka">Taluka *</label>
+    <input type="text" id="taluka" name="taluka" required>
+</div>
+
+<div class="form-group">
+    <label for="district">District *</label>
+    <input type="text" id="district" name="district" required>
+</div>
+
+<div class="form-group">
+    <label for="state">State *</label>
+    <input type="text" id="state" name="state" required>
+</div>
+
+<div class="form-group">
+    <label for="country">Country *</label>
+    <input type="text" id="country" name="country" required>
+</div>
+
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title">Government Identification</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="aadhar_no">Aadhar Number *</label>
+                            <input type="text" id="aadhar_no" name="aadhar_no" placeholder="12-digit Aadhar number" pattern="[0-9]{12}" required>
+                            <small class="form-help">12-digit Aadhar number without spaces</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pan_no">PAN Number *</label>
+                            <input type="text" id="pan_no" name="pan_no" placeholder="10-character PAN" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" required>
+                            <small class="form-help">Format: ABCDE1234F</small>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title">Bank Details</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="account_holder">Account Holder Name *</label>
+                            <input type="text" id="account_holder" name="account_holder" placeholder="As per bank records" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="account_number">Account Number *</label>
+                            <input type="text" id="account_number" name="account_number" placeholder="Bank account number" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="bank_name">Bank Name *</label>
+                            <input type="text" id="bank_name" name="bank_name" placeholder="Name of your bank" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ifsc_code">IFSC Code *</label>
+                            <input type="text" id="ifsc_code" name="ifsc_code" placeholder="Bank IFSC code" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="branch_name">Branch Name *</label>
+                            <input type="text" id="branch_name" name="branch_name" placeholder="Branch name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="branch_city">Branch City *</label>
+                            <input type="text" id="branch_city" name="branch_city" placeholder="City where branch is located" required>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title">Donation Preferences</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="donation_type">Preferred Donation Type *</label>
+                            <select id="donation_type" name="donation_type" required>
+                                <option value="">Select donation type</option>
+                                <option value="one-time">One-time Donation</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="donation_date">Preferred Donation Date</label>
+                            <input type="date" id="donation_date" name="donation_date">
+                            <small class="form-help">For recurring donations</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="tax_benefit" value="yes">
+                            I want to receive tax benefits for my donations (80G certificate)
+                        </label>
+                    </div>
+
+                    <h3 class="section-title">Account Security</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="password">Password *</label>
+                            <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                            <small class="form-help">Minimum 8 characters with letters and numbers</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password *</label>
+                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> *
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-check"></i> Complete Registration
+                    </button>
+                </form>
+
+                <div class="links">
+                    <p>Already have an account? <a href="{{ url_for('donor_login') }}">Login here</a></p>
+                    <a href="{{ url_for('ngo_register') }}" class="link">Register as NGO instead</a>
+                    <a href="{{ url_for('index') }}" class="back-link">
+                        <i class="fas fa-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2023 FundDonate. All rights reserved.</p>
+    </div>
+</body>
+</html>

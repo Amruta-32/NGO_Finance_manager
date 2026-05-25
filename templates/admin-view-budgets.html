@@ -1,0 +1,24 @@
+<h2>Pending Budget Requests</h2>
+
+<table border="1">
+<tr>
+<th>Program</th><th>Requested</th><th>Total Calc</th><th>Action</th>
+</tr>
+{% for b in budgets %}
+<tr>
+<td>{{ b.program_name }}</td>
+<td>₹{{ b.requested_amount }}</td>
+<td>₹{{ b.total_amount }}</td>
+<td>
+<form action="{{ url_for('admin_approve_budget', id=b.id) }}" method="post">
+<input type="number" name="approved_amount" placeholder="Approve Amount" required>
+<button type="submit">Approve</button>
+</form>
+
+<form action="{{ url_for('admin_reject_budget', id=b.id) }}" method="post">
+<button type="submit">Reject</button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</table>

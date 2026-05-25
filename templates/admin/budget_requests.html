@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Budget Requests</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .status-badge {
+            font-size: 0.8em;
+            padding: 4px 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Pending Budget Requests</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+                <a href="{{ url_for('ngo_admin_dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+    {% if requests %}
+        <p class="text-muted">Showing {{ requests|length }} pending requests</p>
+
+        {% for request in requests %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="card-title">{{ request.program_name }}</h5>
+                        <p class="card-text">
+                            <strong>Requested Amount:</strong> ₹{{ request.requested_amount }}<br>
+                            <strong>Requested By:</strong> {{ request.accountant_name }}<br>
+                            <strong>Date:</strong> {{ request.request_date }}<br>
+                            <strong>Purpose:</strong> {{ request.purpose }}
+                        </p>
+                        <span class="badge bg-warning status-badge">Pending</span>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex flex-column gap-2">
+                            <!-- Approve Full -->
+                            <form action="{{ url_for('approve_budget_request', request_id=request.id) }}" method="POST">
+                                <input type="hidden" name="action" value="approve">
+                                <input type="hidden" name="approval_notes" value="Full approval granted">
+                                <button type="submit" class="btn btn-success w-100"
+                                        onclick="return confirm('Approve full amount of ₹{{ request.requested_amount }}?')">
+                                    ✅ Approve Full
+                                </button>
+                            </form>
+
+                            <!-- Partial Approve -->
+                            <form action="{{ url_for('approve_budget_request', request_id=request.id) }}" method="POST" class="d-flex gap-1">
+                                <input type="hidden" name="action" value="partial">
+                                <input type="number"
+                                       name="approved_amount"
+                                       class="form-control form-control-sm"
+                                       placeholder="Amount"
+                                       step="0.01"
+                                       min="1"
+                                       max="{{ request.requested_amount }}"
+                                       required
+                                       style="width: 100px;">
+                                <button type="submit" class="btn btn-warning btn-sm flex-grow-1">
+                                    ⚡ Partial
+                                </button>
+                            </form>
+
+                            <!-- Reject -->
+                            <form action="{{ url_for('approve_budget_request', request_id=request.id) }}" method="POST">
+                                <input type="hidden" name="action" value="reject">
+                                <input type="hidden" name="approval_notes" value="Request rejected">
+                                <button type="submit" class="btn btn-danger w-100"
+                                        onclick="return confirm('Reject this request?')">
+                                    ❌ Reject
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-5">
+            <div class="alert alert-info">
+                <h4>🎉 No Pending Requests!</h4>
+                <p class="mb-0">All budget requests have been processed. New requests will appear here when submitted.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Auto-refresh the page after form submission to see changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function() {
+                // Small delay to allow the action to complete, then refresh
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            });
+        });
+    });
+</script>
+</body>
+</html>

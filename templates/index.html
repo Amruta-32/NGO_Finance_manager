@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FundDonate - Make a Difference</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <a href="{{ url_for('index') }}" class="logo">
+            <i class="fas fa-hand-holding-heart"></i>
+            <h1>FundDonate</h1>
+        </a>
+
+    </div>
+
+    <div class="main-content">
+        <div class="card" style="max-width: 800px;">
+            <div class="card-header" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
+                <div class="card-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h2 class="card-title">Welcome to FundDonate</h2>
+                <p class="card-subtitle">Connecting donors with NGOs to make a difference</p>
+            </div>
+
+            <div class="card-body text-center">
+                <p class="mb-20">Select your dashboard type to continue. FundDonate bridges the gap between generous donors and NGOs working towards meaningful causes.</p>
+
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <a href="{{ url_for('donor_login') }}" class="btn btn-donor">
+                        <i class="fas fa-donate"></i> Donor Login
+                    </a>
+                    <a href="{{ url_for('ngo_login') }}" class="btn btn-ngo">
+                        <i class="fas fa-hands-helping"></i> NGO Login
+                    </a>
+                </div>
+
+                <div class="links mt-20">
+                    <a href="#" class="link">Learn more about FundDonate</a>
+                    <a href="#" class="link">Create an account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2023 FundDonate. All rights reserved. | <a href="#" style="color: #4e73df;">Privacy Policy</a> | <a href="#" style="color: #4e73df;">Terms of Service</a></p>
+    </div>
+</body>
+</html>

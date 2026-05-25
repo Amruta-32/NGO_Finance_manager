@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard - FundDonate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <h2>FundDonate</h2>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#overview" class="nav-item active" data-section="overview">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#donate" class="nav-item" data-section="donate">
+                    <i class="fas fa-donate"></i>
+                    <span>Donate Fund</span>
+                </a>
+                <a href="{{ url_for('donation_history') }}" class="nav-item" data-section="history">
+                    <i class="fas fa-history"></i>
+                    <span>Donation History</span>
+                </a>
+                <a href="{{ url_for('download_receipts') }}" class="nav-item">
+    <i class="fas fa-receipt"></i>
+    <span>Download Receipts</span>
+</a>
+
+
+
+                <a href="#reports" class="nav-item" data-section="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>  <a href="{{ url_for('donor_logout') }}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Donor Dashboard</h1>
+                    <p>Welcome back, {{ donor.fullname }}</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span>{{ donor.fullname }}</span>
+                    </div>
+                    <div class="quick-donate">
+                        <button class="btn btn-primary" onclick="showSection('donate')">
+                            <i class="fas fa-donate"></i> Quick Donate
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Donate Fund Section -->
+            <div class="content-section active" id="donate-section">
+                <div class="section-header">
+                    <h2>Donate to NGOs</h2>
+                    <p>Make a difference with your contribution</p>
+                </div>
+
+                <form action="{{ url_for('make_donation') }}" method="POST" class="donation-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                    <label for="ngo_id">NGO *</label>
+<select id="ngo_id" name="ngo_id" class="form-control" required>
+    <option value="74577c06-ff6c-4380-94a4-2a65bc6a5628">Funddonate</option>
+</select>
+<input type="hidden" name="ngo_id" value="74577c06-ff6c-4380-94a4-2a65bc6a5628">
+
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="amount">Donation Amount (₹) *</label>
+                            <input type="number" id="amount" name="amount" class="form-control"
+                                   placeholder="Enter amount" min="100" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="donation_type">Donation Type *</label>
+                            <select id="donation_type" name="donation_type" class="form-control" required>
+                                <option value="one-time">One-time Donation</option>
+                                <option value="monthly">Monthly</option>
+                                 <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                       <!-- 🗓️ Donation Date -->
+<div class="form-group">
+    <label for="donation_date">Donation Date *</label>
+    <input type="date" id="donation_date" name="donation_date" class="form-control" required>
+</div>
+                        <div class="form-group">
+                            <label for="payment_method">Payment Method *</label>
+                            <select id="payment_method" name="payment_method" class="form-control" required>
+                                <option value="upi">UPI</option>
+                                <option value="card">Credit/Debit Card</option>
+                                <option value="netbanking">Net Banking</option>
+                                <option value="wallet">Wallet</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message to NGO (Optional)</label>
+                        <textarea id="message" name="message" class="form-control"
+                                  placeholder="Add a personal message..." rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="tax_benefit" value="yes">
+                            I want to claim tax benefits under 80G
+                        </label>
+                    </div>
+
+                    <div class="donation-summary">
+                        <h4>Donation Summary</h4>
+                        <div class="summary-item">
+                            <span>Amount:</span>
+                            <span id="summary-amount">₹0</span>
+                        </div>
+
+                        <div class="summary-item total">
+                            <span>Total to pay:</span>
+                            <span id="summary-total">₹0</span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="showSection('overview')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-credit-card"></i> Proceed to Payment
+                        </button>
+                    </div>
+                </form>
+
+
+            <!-- Download Receipts Section -->
+            <div class="content-section" id="receipts-section">
+                <div class="section-header">
+                    <h2>Download Receipts</h2>
+                    <p>Download donation receipts for tax purposes</p>
+                </div>
+
+                <div class="receipts-grid">
+                    {% for donation in donations %}
+                    <div class="receipt-card">
+                        <div class="receipt-header">
+                            <i class="fas fa-receipt"></i>
+                            <div class="receipt-info">
+                                <h4>{{ donation.ngo_name }}</h4>
+                                <p>Donated on {{ donation.donation_date }}</p>
+                            </div>
+                        </div>
+                        <div class="receipt-details">
+                            <div class="detail-item">
+                                <span>Amount:</span>
+                                <span>₹{{ "{:,}".format(donation.amount) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Type:</span>
+                                <span>{{ donation.donation_type|title }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Status:</span>
+                                <span class="badge badge-success">Completed</span>
+                            </div>
+                        </div>
+                        <div class="receipt-actions">
+                            <button class="btn btn-sm btn-primary"
+                                    onclick="downloadReceipt({{ donation.id }})">
+                                <i class="fas fa-download"></i> Download Receipt
+                            </button>
+                            <button class="btn btn-sm btn-secondary"
+                                    onclick="emailReceipt({{ donation.id }})">
+                                <i class="fas fa-envelope"></i> Email
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div class="content-section" id="reports-section">
+                <div class="section-header">
+                    <h2>Donation Reports</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="generateReport()">
+                            <i class="fas fa-file-export"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h4>Annual Summary - 2023</h4>
+                        <div class="report-stats">
+                            <div class="stat">
+                                <span class="label">Total Donated:</span>
+                                <span class="value">₹{{ "{:,}".format(total_donated) }}</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">NGOs Supported:</span>
+                                <span class="value">{{ ngos_supported }}</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Tax Benefits:</span>
+                                <span class="value">₹{{ "{:,}".format(tax_benefits) }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h4>Monthly Breakdown</h4>
+                        <div class="chart-placeholder">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.add('active');
+
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+        }
+
+        // Select NGO from featured list
+        function selectNGO(ngoId) {
+            document.getElementById('ngo_id').value = ngoId;
+            showSection('donate');
+        }
+
+        // Calculate donation summary
+        document.getElementById('amount').addEventListener('input', function() {
+            const amount = parseFloat(this.value) || 0;
+
+            const total = amount;
+
+            document.getElementById('summary-amount').textContent = '₹' + amount.toLocaleString();
+             document.getElementById('summary-total').textContent = '₹' + total.toLocaleString();
+        });
+
+        // Download receipt
+        function downloadReceipt(donationId) {
+            window.open(`/download-receipt/${donationId}`, '_blank');
+        }
+
+        // Email receipt
+        function emailReceipt(donationId) {
+            if (confirm('Send receipt to your registered email?')) {
+                fetch(`/email-receipt/${donationId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        alert('Receipt sent to your email!');
+                    });
+            }
+        }
+
+        // Filter donation history
+        function filterHistory(type) {
+            // Implementation for filtering
+            alert('Filtering donations by: ' + type);
+        }
+
+        // Generate report
+        function generateReport() {
+            window.open('/generate-report', '_blank');
+        }
+
+        // Initialize default section
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('donate');
+        });
+   document.addEventListener("DOMContentLoaded", function() {
+    const dateInput = document.getElementById("donation_date");
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today; dateInput.value = today;
+});</script>
+ </body>
+</html>

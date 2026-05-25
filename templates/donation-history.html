@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .month-picker {
+            display: none;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .month-picker input {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .month-picker button {
+            margin-left: 10px;
+            padding: 8px 12px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="history-container">
+        <h2>Donation History</h2>
+
+        <div style="text-align:center; margin-bottom:20px;">
+            <a href="{{ url_for('donation_history', filter='all') }}"
+               class="back-btn {% if filter_type == 'all' %}active{% endif %}">All</a>
+
+            <a href="#" class="back-btn {% if filter_type == 'monthly' %}active{% endif %}"
+               onclick="showMonthPicker()">Monthly</a>
+
+            <a href="{{ url_for('donation_history', filter='yearly') }}"
+               class="back-btn {% if filter_type == 'yearly' %}active{% endif %}">Yearly</a>
+        </div>
+
+        <!-- Month Picker (hidden until Monthly is clicked) -->
+        <div id="monthPicker" class="month-picker">
+            <form method="GET" action="{{ url_for('donation_history') }}">
+                <input type="hidden" name="filter" value="monthly">
+                <label>Select Month:</label>
+                <input type="month" name="month" required>
+                <button type="submit">View</button>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>NGO Name</th>
+                        <th>Category</th>
+                        <th>Donation Type</th>
+                        <th>Payment Method</th>
+                        <th>Amount (₹)</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for donation in donations %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ donation.ngo_name }}</td>
+                        <td>{{ donation.activity_name or '-' }}</td>
+                        <td>{{ donation.donation_type }}</td>
+                        <td>{{ donation.payment_method }}</td>
+                        <td>{{ donation.amount }}</td>
+                        <td>{{ donation.donation_date if donation.donation_date else 'N/A' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="no-history">No donations found for this period.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align:center;">
+            <a href="{{ url_for('donor_dashboard') }}" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        function showMonthPicker() {
+            document.getElementById('monthPicker').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

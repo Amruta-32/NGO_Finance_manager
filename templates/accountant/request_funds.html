@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Funds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        .btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .btn-secondary {
+            background: #6b7280;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .program-info {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 5px;
+            border-left: 4px solid #4f46e5;
+        }
+        .program-detail {
+            margin-bottom: 5px;
+        }
+        .amount-info {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-hand-holding-usd"></i> Request Funds</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="program_id">Select Program *</label>
+                <select id="program_id" name="program_id" required onchange="showProgramInfo()">
+                    <option value="">-- Select a Program --</option>
+                    {% for program in programs %}
+                    <option value="{{ program.id }}"
+                            data-amount="{{ program.allocated_amount }}"
+                            data-budget="{{ program.budget_name }}">
+                        {{ program.program_name }} (Budget: {{ program.budget_name }})
+                    </option>
+                    {% endfor %}
+                </select>
+                <div id="programInfo" class="program-info" style="display: none;">
+                    <div class="program-detail"><strong>Budget:</strong> <span id="budgetName"></span></div>
+                    <div class="program-detail"><strong>Allocated Amount:</strong> ₹<span id="allocatedAmount"></span></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="requested_amount">Requested Amount (₹) *</label>
+                <input type="number" id="requested_amount" name="requested_amount" step="1" min="0" required>
+                <div class="amount-info">Enter the amount you wish to request</div>
+            </div>
+
+            <div class="form-group">
+                <label for="request_date">Request Date *</label>
+                <input type="date" id="request_date" name="request_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="purpose">Purpose *</label>
+                <textarea id="purpose" name="purpose" rows="4" required placeholder="Explain what the funds will be used for..."></textarea>
+            </div>
+
+            <div>
+                <button type="submit" class="btn">
+                    <i class="fas fa-paper-plane"></i> Submit Request
+                </button>
+                <a href="{{ url_for('ngo_accountant_dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function showProgramInfo() {
+            const select = document.getElementById('program_id');
+            const selectedOption = select.options[select.selectedIndex];
+            const programInfo = document.getElementById('programInfo');
+
+            if (selectedOption.value) {
+                document.getElementById('budgetName').textContent = selectedOption.getAttribute('data-budget');
+                document.getElementById('allocatedAmount').textContent = parseFloat(selectedOption.getAttribute('data-amount')).toLocaleString();
+                programInfo.style.display = 'block';
+            } else {
+                programInfo.style.display = 'none';
+            }
+        }
+
+        // Set default date to today
+        document.getElementById('request_date').valueAsDate = new Date();
+    </script>
+</body>
+</html>

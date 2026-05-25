@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Registration - FundDonate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <a href="{{ url_for('index') }}" class="logo">
+            <i class="fas fa-hand-holding-heart"></i>
+            <h1>FundDonate</h1>
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="card ngo">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h2 class="card-title">NGO Registration</h2>
+                <p class="card-subtitle">Join our network of change-makers</p>
+            </div>
+
+            <div class="card-body">
+                <form action="{{ url_for('ngo_register') }}" method="POST">
+                    <h3 class="section-title">Organization Information</h3>
+
+                    <div class="form-group">
+                        <label for="org_name">Organization Name *</label>
+                        <input type="text" id="org_name" name="org_name" placeholder="Enter your organization name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="activity_name">Primary Activity/Field *</label>
+                        <select id="activity_name" name="activity_name" required>
+                            <option value="">Select primary activity</option>
+                            <option value="education">Education</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="environment">Environment</option>
+                            <option value="animal_welfare">Animal Welfare</option>
+                            <option value="women_empowerment">Women Empowerment</option>
+                            <option value="child_welfare">Child Welfare</option>
+                            <option value="disaster_relief">Disaster Relief</option>
+                            <option value="rural_development">Rural Development</option>
+                            <option value="elderly_care">Elderly Care</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="org_description">Organization Description *</label>
+                        <textarea id="org_description" name="org_description" placeholder="Describe your organization's mission and activities" rows="3" required></textarea>
+                    </div>
+
+                    <h3 class="section-title">Contact Information</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="contact_person">Contact Person Name *</label>
+                            <input type="text" id="contact_person" name="contact_person" placeholder="Full name of contact person" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact_designation">Designation *</label>
+                            <input type="text" id="contact_designation" name="contact_designation" placeholder="Designation of contact person" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="email">Official Email</label>
+                            <input type="email" id="email" name="email" placeholder="Enter organization email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="Enter organization phone number" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="org_address">Organization Address *</label>
+                        <textarea id="org_address" name="org_address" placeholder="Enter complete organization address" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" placeholder="City" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" id="state" name="state" placeholder="State" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode *</label>
+                            <input type="text" id="pincode" name="pincode" placeholder="Pincode" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="website">Website</label>
+                        <input type="url" id="website" name="website" placeholder="https://your-organization.org">
+                    </div>
+
+                    <h3 class="section-title">Legal & Registration Details</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="registration_no">Registration Number *</label>
+                            <input type="text" id="registration_no" name="registration_no" placeholder="NGO registration number" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="registration_date">Registration Date *</label>
+                            <input type="date" id="registration_date" name="registration_date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="80g_certificate">80G Certificate Details</label>
+                        <input type="text" id="80g_certificate" name="80g_certificate" placeholder="80G certificate number (if available)">
+                        <small class="form-help">Provide if you have 80G certificate for tax benefits</small>
+                    </div>
+
+                    <h3 class="section-title">Bank Details</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="account_holder">Account Holder Name *</label>
+                            <input type="text" id="account_holder" name="account_holder" placeholder="As per bank records" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="account_number">Account Number *</label>
+                            <input type="text" id="account_number" name="account_number" placeholder="Bank account number" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="bank_name">Bank Name *</label>
+                            <input type="text" id="bank_name" name="bank_name" placeholder="Name of your bank" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="branch_name">Branch Name *</label>
+                            <input type="text" id="branch_name" name="branch_name" placeholder="Branch name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="ifsc_code">IFSC Code *</label>
+                            <input type="text" id="ifsc_code" name="ifsc_code" placeholder="Bank IFSC code" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="branch_city">Branch City *</label>
+                            <input type="text" id="branch_city" name="branch_city" placeholder="City where branch is located" required>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title">Account Security</h3>
+                    <div class="form-group">
+                        <label for="role">Account Type *</label>
+                        <select id="role" name="role" class="form-control" required>
+                            <option value="">-- Select Account Type --</option>
+                            <option value="admin">Admin Account</option>
+                            <option value="accountant">Accountant Account</option>
+                        </select>
+                        <small class="form-help">Admin: Can approve budgets and monitor all activities | Accountant: Can create budgets and record expenditures</small>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="password">Password *</label>
+                            <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                            <small class="form-help">Minimum 8 characters with letters and numbers</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password *</label>
+                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            I certify that all information provided is accurate and I agree to the <a href="#">Terms of Service</a> *
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-building"></i> Register NGO
+                    </button>
+                </form>
+
+                <div class="links">
+                    <p>Already have an account? <a href="{{ url_for('ngo_login') }}">Login here</a></p>
+                    <a href="{{ url_for('donor_register') }}" class="link">Register as Donor instead</a>
+                    <a href="{{ url_for('index') }}" class="back-link">
+                        <i class="fas fa-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2023 FundDonate. All rights reserved.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Budget Requests</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>All Budget Requests (Debug View)</h2>
+    <a href="{{ url_for('admin_budget_requests') }}" class="btn btn-primary mb-3">← Back to Pending Requests</a>
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Program</th>
+                <th>Requested</th>
+                <th>Status</th>
+                <th>Approved Amount</th>
+                <th>Approval Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td>{{ request.id }}</td>
+                <td>{{ request.program_name }}</td>
+                <td>₹{{ request.requested_amount }}</td>
+                <td>
+                    <span class="badge
+                        {% if request.status == 'pending' %}bg-warning
+                        {% elif request.status == 'approved' %}bg-success
+                        {% elif request.status == 'rejected' %}bg-danger
+                        {% else %}bg-info{% endif %}">
+                        {{ request.status }}
+                    </span>
+                </td>
+                <td>₹{{ request.approved_amount or '0' }}</td>
+                <td>{{ request.approval_date or 'Not approved' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

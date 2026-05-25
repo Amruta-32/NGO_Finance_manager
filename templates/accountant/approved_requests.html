@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approved Requests</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .request-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .request-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .request-meta {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .amount-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .amount-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .requested {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+        }
+        .approved {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+        }
+        .amount-label {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+        .amount-value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-partial {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .request-details {
+            margin-bottom: 15px;
+        }
+        .detail-item {
+            margin-bottom: 8px;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #374151;
+        }
+        .no-requests {
+            text-align: center;
+            color: #6b7280;
+            padding: 40px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-check-circle"></i> Approved Fund Requests</h1>
+
+        {% if requests %}
+            {% for request in requests %}
+            <div class="request-card">
+                <div class="request-header">
+                    <div>
+                        <div class="request-title">{{ request.program_name }}</div>
+                        <div class="request-meta">
+                            {{ request.budget_programs.master_budgets.budget_name if request.budget_programs and request.budget_programs.master_budgets else 'N/A' }} • Approved on {{ request.approval_date }}
+                        </div>
+                    </div>
+                    <div class="status-badge status-{{ 'approved' if request.status == 'approved' else 'partial' }}">
+                        {{ request.status.replace('_', ' ').title() }}
+                    </div>
+                </div>
+
+                <div class="amount-section">
+                    <div class="amount-box requested">
+                        <div class="amount-label">Requested Amount</div>
+                        <div class="amount-value">₹{{ request.requested_amount }}</div>
+                    </div>
+                    <div class="amount-box approved">
+                        <div class="amount-label">Approved Amount</div>
+                        <div class="amount-value">₹{{ request.approved_amount }}</div>
+                    </div>
+                </div>
+
+                <div class="request-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Purpose:</span>
+                        {{ request.purpose }}
+                    </div>
+                    {% if request.approval_notes %}
+                    <div class="detail-item">
+                        <span class="detail-label">Approval Notes:</span>
+                        {{ request.approval_notes }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <a href="{{ url_for('accountant_add_expenditure') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Record Expenditure
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-requests">
+                <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 20px;"></i>
+                <h3>No Approved Requests</h3>
+                <p>You don't have any approved fund requests yet.</p>
+                <a href="{{ url_for('request_funds') }}" class="btn btn-primary" style="margin-top: 15px;">
+                    <i class="fas fa-hand-holding-usd"></i> Request Funds
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

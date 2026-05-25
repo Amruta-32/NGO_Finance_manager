@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Budgets</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body><div style="margin-bottom: 15px;">
+    <a href="{{ url_for('ngo_dashboard') }}" class="btn btn-secondary" style="
+        background-color: #555;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 15px;
+        transition: 0.3s;
+    ">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+    <div class="container">
+        <h2>All Budgets</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Program Name</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for budget in budgets %}
+                <tr>
+                    <td>{{ budget.id }}</td>
+                    <td>{{ budget.program_name }}</td>
+                    <td>₹{{ budget.total_amount }}</td>
+                    <td>
+                        {% if budget.status == 'Approved' %}
+                            <span style="color: green; font-weight: bold;">Approved</span>
+                        {% elif budget.status == 'Rejected' %}
+                            <span style="color: red; font-weight: bold;">Rejected</span>
+                        {% elif budget.status == 'Partial Approval' %}
+                            <span style="color: orange; font-weight: bold;">Partial Approval</span>
+                        {% else %}
+                            <span style="color: gray;">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('update_budget_status', budget_id=budget.id, new_status='Approved') }}" class="btn btn-success btn-sm">Approve</a>
+                        <a href="{{ url_for('update_budget_status', budget_id=budget.id, new_status='Partial Approval') }}" class="btn btn-warning btn-sm">Partial</a>
+                        <a href="{{ url_for('update_budget_status', budget_id=budget.id, new_status='Rejected') }}" class="btn btn-danger btn-sm">Reject</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

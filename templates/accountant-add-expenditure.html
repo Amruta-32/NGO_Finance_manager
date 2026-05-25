@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Expenditure</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Add Expenditure</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="program_name" class="form-label">Select Available Budget *</label>
+            <select id="program_name" name="program_name" class="form-control" required onchange="updateRemainingAmount()">
+                <option value="">-- Select Available Budget --</option>
+                {% for budget in available_budgets %}
+                <option value="{{ budget.program_name }}" data-remaining="{{ budget.remaining_amount }}">
+                    {{ budget.program_name }} - Available: ₹{{ budget.remaining_amount }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="amount_spent" class="form-label">Amount Spent (₹) *</label>
+            <input type="number" id="amount_spent" name="amount_spent" class="form-control" step="0.01" min="0" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="spending_date" class="form-label">Spending Date *</label>
+            <input type="date" id="spending_date" name="spending_date" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="paid_to" class="form-label">Paid To *</label>
+            <input type="text" id="paid_to" name="paid_to" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="payment_method" class="form-label">Payment Method *</label>
+            <select id="payment_method" name="payment_method" class="form-control" required>
+                <option value="">-- Select Payment Method --</option>
+                <option value="cash">Cash</option>
+                <option value="bank_transfer">Bank Transfer</option>
+                <option value="cheque">Cheque</option>
+                <option value="online">Online Payment</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" id="location" name="location" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="receipt_number" class="form-label">Receipt Number *</label>
+            <input type="text" id="receipt_number" name="receipt_number" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="receipt_file" class="form-label">Upload Receipt (PDF, PNG, JPG) *</label>
+            <input type="file" id="receipt_file" name="receipt_file" class="form-control" accept=".pdf,.png,.jpg,.jpeg,.gif" required>
+            <div class="form-text">Max file size: 16MB. Supported formats: PDF, PNG, JPG, JPEG, GIF</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="details" class="form-label">Details *</label>
+            <textarea id="details" name="details" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="notes" class="form-label">Notes</label>
+            <textarea id="notes" name="notes" class="form-control" rows="2"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Record Expenditure</button>
+        <a href="{{ url_for('ngo_accountant_dashboard') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<script>
+function updateRemainingAmount() {
+    const select = document.getElementById('program_name');
+    const selectedOption = select.options[select.selectedIndex];
+    const amountSpent = document.getElementById('amount_spent');
+
+    if (selectedOption.value) {
+        const remaining = selectedOption.getAttribute('data-remaining');
+        amountSpent.max = remaining;
+        amountSpent.placeholder = `Max: ₹${remaining}`;
+    }
+}
+
+// Set default date to today
+document.getElementById('spending_date').valueAsDate = new Date();
+
+// File validation
+document.getElementById('receipt_file').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const fileSize = file.size / 1024 / 1024; // MB
+        if (fileSize > 16) {
+            alert('File size must be less than 16MB');
+            e.target.value = '';
+        }
+    }
+});
+</script>
+</body>
+</html>

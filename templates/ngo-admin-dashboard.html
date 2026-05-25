@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FundDonate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .white-link {
+            color: white !important;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .white-link:hover {
+            color: white !important;
+            text-decoration: underline;
+            opacity: 0.9;
+        }
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        /* Action Buttons Styles */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .action-buttons form {
+            margin: 0;
+            display: inline;
+        }
+        .action-buttons .btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            min-width: 70px;
+        }
+        /* Partial Approval Styles */
+        .partial-approval-form {
+            background: #fffbf0;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            display: none;
+        }
+        .partial-form-content {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+        .partial-form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .partial-form-actions .btn {
+            flex: 1;
+        }
+        .admin-notes-textarea {
+            font-size: 14px;
+            resize: vertical;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        .approved-amount-input {
+            font-weight: bold;
+            color: #28a745;
+            border: 2px solid #28a745 !important;
+        }
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+        .is-valid {
+            border-color: #28a745 !important;
+        }
+        .amount-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .amount-input-group input {
+            flex: 1;
+        }
+        .quick-notes-form {
+            margin-top: 10px;
+        }
+        /* Dashboard Section Styles */
+        .dashboard-section {
+            background: white;
+            margin: 0 30px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .dashboard-section .section-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 30px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .dashboard-section .section-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .dashboard-section .section-content {
+            padding: 25px 30px;
+        }
+        /* Type and Status Badges */
+        .type-badge {
+            background: #6c757d;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        /* Table Styling for Donations */
+        .donor-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .amount {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .date {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <h2>FundDonate</h2>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+    <!-- Dashboard -->
+    <a href="{{ url_for('ngo_admin_dashboard') }}" class="nav-item active">
+        <i class="fas fa-chart-bar"></i>
+        <span>Dashboard</span>
+    </a>
+
+    <!-- Budget Requests -->
+    <a href="{{ url_for('admin_budget_requests') }}" class="nav-item">
+        <i class="fas fa-money-check-alt"></i>
+        <span>Budget Requests</span>
+    </a>
+
+    <!-- All Requests -->
+    <a href="{{ url_for('admin_all_requests') }}" class="nav-item">
+        <i class="fas fa-list-alt"></i>
+        <span>All Requests</span>
+    </a>
+
+    <!-- Expenditure Monitor -->
+    <a href="{{ url_for('admin_view_expenditures') }}" class="nav-item">
+        <i class="fas fa-receipt"></i>
+        <span>Expenditure Monitor</span>
+    </a>
+
+    <!-- Master Budget -->
+    <a href="{{ url_for('create_master_budget') }}" class="nav-item">
+        <i class="fas fa-balance-scale"></i>
+        <span>Master Budget</span>
+    </a>
+
+    <!-- Monthly Reports -->
+    <a href="{{ url_for('admin_monthly_consolidated') }}" class="nav-item">
+        <i class="fas fa-file-contract"></i>
+        <span>Monthly Reports</span>
+    </a>
+
+    <!-- Logout -->
+    <a href="{{ url_for('ngo_logout') }}" class="nav-item logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+    </a>
+</nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Admin Dashboard</h1>
+                    <p>Welcome back, {{ session.staff_name }} (Admin)</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <i class="fas fa-user-shield"></i>
+                        <span>{{ session.staff_name }} - Admin</span>
+                    </div>
+                    <span class="status-badge approved">Active</span>
+                </div>
+            </header>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}" style="margin: 20px 30px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Dashboard Stats Section -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Donations</h3>
+                        <p class="stat-number">₹{{ total_donations }}</p>
+                        <p class="stat-text">{{ donation_count }} donations</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Expenditures</h3>
+                        <p class="stat-number">₹{{ total_expenditures }}</p>
+                        <p class="stat-text">{{ expense_count }} expenses</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Remaining Balance</h3>
+                        <p class="stat-number">₹{{ remaining_amount }}</p>
+                        <p class="stat-text">Available Funds</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Pending Requests</h3>
+                        <p class="stat-number">{{ pending_count }}</p>
+                        <p class="stat-text">Budget Requests</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Donations Section -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-donate"></i> Recent Donations</h3>
+                </div>
+                <div class="section-content">
+                    {% if recent_donations %}
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Donor</th>
+                                    <th>Amount</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for donation in recent_donations %}
+                                <tr>
+                                    <td class="donor-name">{{ donation.donor_name }}</td>
+                                    <td class="amount">₹{{ donation.amount }}</td>
+                                    <td>
+                                        <span class="type-badge">
+                                            {{ donation.donation_type|replace('_', ' ')|title }}
+                                        </span>
+                                    </td>
+                                    <td class="date">{{ donation.donation_date }}</td>
+                                    <td>
+                                        <span class="status-badge {% if donation.status == 'Completed' %}status-completed{% else %}status-pending{% endif %}">
+                                            {{ donation.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No donations received yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="actions-grid">
+                <div class="action-card">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <h3>Create Master Budget</h3>
+                    <p>Allocate main fund categories like Education, Health, Disaster Relief etc.</p>
+                    <a href="{{ url_for('create_master_budget') }}" class="btn btn-primary">Create Budget</a>
+                </div>
+
+                <div class="action-card">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>View Budget Requests</h3>
+                    <p>Review and approve pending budget requests from accountants</p>
+                    <a href="{{ url_for('admin_budget_requests') }}" class="btn btn-primary">View Requests</a>
+                </div>
+
+                <div class="action-card">
+                    <i class="fas fa-receipt"></i>
+                    <h3>Monitor Expenditures</h3>
+                    <p>Track all expenses and monitor fund utilization</p>
+                    <a href="{{ url_for('admin_view_expenditures') }}" class="btn btn-primary">View Expenses</a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dropdown functionality
+            document.querySelectorAll(".dropdown-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    const dropdown = this.nextElementSibling;
+                    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+                });
+            });
+
+            // Smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Partial Approval Functionality
+            document.querySelectorAll('.partial-approval-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const budgetId = this.getAttribute('data-budget-id');
+
+                    // Hide all other partial forms
+                    document.querySelectorAll('.partial-approval-form').forEach(form => {
+                        form.style.display = 'none';
+                    });
+
+                    // Show this partial form
+                    const partialForm = document.getElementById(`partial-form-${budgetId}`);
+                    partialForm.style.display = 'block';
+
+                    // Focus on amount input
+                    const amountInput = document.getElementById(`approved_amount_${budgetId}`);
+                    amountInput.focus();
+                });
+            });
+
+            // Cancel partial approval
+            document.querySelectorAll('.cancel-partial').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const budgetId = this.getAttribute('data-budget-id');
+                    const partialForm = document.getElementById(`partial-form-${budgetId}`);
+                    partialForm.style.display = 'none';
+                });
+            });
+
+            // Validate partial approval amount
+            document.querySelectorAll('.approved-amount-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const maxAmount = parseFloat(this.getAttribute('max'));
+                    const currentAmount = parseFloat(this.value) || 0;
+
+                    if (currentAmount > maxAmount) {
+                        this.value = maxAmount;
+                        this.classList.add('is-invalid');
+                    } else if (currentAmount <= 0) {
+                        this.classList.add('is-invalid');
+                    } else {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    }
+                });
+            });
+
+            // Form validation for partial approval
+            document.querySelectorAll('.partial-approval-form form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const approvedAmountInput = this.querySelector('.approved-amount-input');
+                    const approvedAmount = parseFloat(approvedAmountInput.value) || 0;
+                    const maxAmount = parseFloat(approvedAmountInput.getAttribute('max'));
+
+                    if (approvedAmount <= 0 || approvedAmount > maxAmount) {
+                        e.preventDefault();
+                        alert('Please enter a valid approved amount between ₹1 and ₹' + maxAmount.toLocaleString('en-IN', {maximumFractionDigits: 2}));
+                        approvedAmountInput.focus();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

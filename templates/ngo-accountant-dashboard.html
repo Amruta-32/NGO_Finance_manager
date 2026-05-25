@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accountant Dashboard - FundDonate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 30px 25px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: #4e73df;
+        }
+
+        .logo h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+            color: white;
+            border-left-color: #4e73df;
+        }
+
+        .nav-item.active {
+            background: #34495e;
+            color: white;
+            border-left-color: #4e73df;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            width: 20px;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 15px 25px;
+        }
+
+        .logout-btn:hover {
+            color: #c0392b;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 0;
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 25px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .user-info i {
+            font-size: 20px;
+            color: #4e73df;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-card:nth-child(1) .stat-icon { background: #4e73df; }
+        .stat-card:nth-child(2) .stat-icon { background: #1cc88a; }
+        .stat-card:nth-child(3) .stat-icon { background: #36b9cc; }
+        .stat-card:nth-child(4) .stat-icon { background: #f6c23e; }
+
+        .stat-info h3 {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .stat-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        /* Dashboard Section */
+        .dashboard-section {
+            background: white;
+            margin: 0 30px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 30px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .section-content {
+            padding: 25px 30px;
+        }
+
+        /* Actions Grid */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 30px;
+        }
+
+        .action-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            border-color: #4e73df;
+            transform: translateY(-5px);
+        }
+
+        .action-card i {
+            font-size: 40px;
+            color: #4e73df;
+            margin-bottom: 15px;
+        }
+
+        .action-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .action-card p {
+            color: #6c757d;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #4e73df;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2e59d9;
+        }
+
+        /* Tables */
+        .table-container {
+            padding: 0 30px 30px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Type and Status Badges */
+        .type-badge {
+            background: #6c757d;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Table Styling for Donations */
+        .donor-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .amount {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .date {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Recent Requests */
+        .recent-requests {
+            background: white;
+            margin: 0 30px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .request-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .request-item:last-child {
+            border-bottom: none;
+        }
+
+        .request-info h4 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+
+        .request-meta {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .request-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-pending { background: #fff3cd; color: #856404; }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 15px;
+            }
+
+            .nav-item {
+                flex-shrink: 0;
+                border-left: none;
+                border-bottom: 4px solid transparent;
+            }
+
+            .nav-item.active {
+                border-left: none;
+                border-bottom-color: #4e73df;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .dashboard-section, .recent-requests {
+                margin: 0 20px 20px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <h2>FundDonate</h2>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <!-- Dashboard -->
+                <a href="{{ url_for('ngo_accountant_dashboard') }}" class="nav-item active">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <!-- Fund Requests -->
+                <a href="{{ url_for('request_funds') }}" class="nav-item">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Request Funds</span>
+                </a>
+
+                <!-- Approved Requests -->
+                <a href="{{ url_for('approved_requests') }}" class="nav-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Approved Requests</span>
+                </a>
+
+                <!-- Expenditure Management -->
+                <a href="{{ url_for('accountant_add_expenditure') }}" class="nav-item">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Expenditure</span>
+                </a>
+
+                <!-- View Expenditures -->
+                <a href="{{ url_for('accountant_view_expenditures') }}" class="nav-item">
+                    <i class="fas fa-list"></i>
+                    <span>View Expenditures</span>
+                </a>
+
+                <!-- Logout -->
+                <a href="{{ url_for('ngo_logout') }}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Accountant Dashboard</h1>
+                    <p>Welcome back, {{ session.staff_name }} - {{ ngo.org_name }}</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <i class="fas fa-user-tie"></i>
+                        <span>{{ session.staff_name }} - Accountant</span>
+                    </div>
+                    <span class="status-badge approved">Active</span>
+                </div>
+            </header>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Donations</h3>
+                        <p class="stat-number">₹{{ total_donations }}</p>
+                        <p class="stat-text">{{ donation_count }} donations</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>My Expenditures</h3>
+                        <p class="stat-number">₹{{ total_expenditures }}</p>
+                        <p class="stat-text">{{ expense_count }} expenses</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Remaining Balance</h3>
+                        <p class="stat-number">₹{{ remaining_amount }}</p>
+                        <p class="stat-text">Available Funds</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>My Requests</h3>
+                        <p class="stat-number">{{ my_requests|length }}</p>
+                        <p class="stat-text">Budget Requests</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="actions-grid">
+                <div class="action-card">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <h3>Request Funds</h3>
+                    <p>Submit new budget requests for program funding</p>
+                    <a href="{{ url_for('request_funds') }}" class="btn btn-primary">Request Funds</a>
+                </div>
+
+                <div class="action-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Approved Requests</h3>
+                    <p>View your approved and partially approved budget requests</p>
+                    <a href="{{ url_for('approved_requests') }}" class="btn btn-primary">View Approved</a>
+                </div>
+
+                <div class="action-card">
+                    <i class="fas fa-plus"></i>
+                    <h3>Add Expenditure</h3>
+                    <p>Record new expenses against approved budgets</p>
+                    <a href="{{ url_for('accountant_add_expenditure') }}" class="btn btn-primary">Add Expense</a>
+                </div>
+
+                <div class="action-card">
+                    <i class="fas fa-list"></i>
+                    <h3>View Expenditures</h3>
+                    <p>Monitor all your recorded expenses and receipts</p>
+                    <a href="{{ url_for('accountant_view_expenditures') }}" class="btn btn-primary">View Expenses</a>
+                </div>
+            </div>
+
+            <!-- Recent Donations Section -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-donate"></i> Recent Donations</h3>
+                </div>
+                <div class="section-content">
+                    {% if recent_donations %}
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Donor</th>
+                                    <th>Amount</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for donation in recent_donations %}
+                                <tr>
+                                    <td class="donor-name">{{ donation.donor_name }}</td>
+                                    <td class="amount">₹{{ donation.amount }}</td>
+                                    <td>
+                                        <span class="type-badge">
+                                            {{ donation.donation_type|replace('_', ' ')|title }}
+                                        </span>
+                                    </td>
+                                    <td class="date">{{ donation.donation_date.strftime('%d %b %Y') }}</td>
+                                    <td>
+                                        <span class="status-badge {% if donation.status == 'Completed' %}status-completed{% else %}status-pending{% endif %}">
+                                            {{ donation.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No donations received yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Requests Section -->
+            {% if my_requests %}
+            <div class="recent-requests">
+                <div class="section-header">
+                    <h3><i class="fas fa-clock"></i> Recent Budget Requests</h3>
+                </div>
+                <div class="section-content">
+                    {% for request in my_requests[:5] %}
+                    <div class="request-item">
+                        <div class="request-info">
+                            <h4>{{ request.program_name }}</h4>
+                            <div class="request-meta">
+                                Amount: ₹{{ request.requested_amount }} |
+                                Date: {{ request.request_date }}
+                            </div>
+                        </div>
+                        <div class="request-status status-{{ request.status }}">
+                            {{ request.display_status }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
