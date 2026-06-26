@@ -2,6 +2,7 @@
 A full-stack web application designed to digitally manage NGO operations such as beneficiary tracking, volunteer coordination, donation records , and transparent reporting.
 
 🧪 How to Setup & Run (Environment Steps)
+
 📥 1. Clone Project
 git clone <your-repo-url>
 cd ngo-management-system
