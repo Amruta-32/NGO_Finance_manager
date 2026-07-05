@@ -1,4 +1,4 @@
-# NGO_Finance_manager
+# NGO_Finance_manager 
 A full-stack web application designed to digitally manage NGO operations such as beneficiary tracking, volunteer coordination, donation records , and transparent reporting.
 
 🧪 How to Setup & Run (Environment Steps)
@@ -42,3 +42,6 @@ flask run
 
 🌐 9. Open in Browser
 http://127.0.0.1:5000/
+
+# Live Demo 
+https://nurture-orphan.onrender.com/
